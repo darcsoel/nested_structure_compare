@@ -1,16 +1,50 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.//
+from itertools import zip_longest
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f"Hi, {name}...")  # Press Ctrl+F8 to toggle the breakpoint.
+def check_if_list_contains_simple_data_types(list_):
+    result = []
+
+    for element in list_:
+        if isinstance(element, (int, float, bool, str)):
+            result.append(True)
+        else:
+            result.append(False)
+
+    return all(result)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == "__main__":
-    print_hi("PyCharm")
+def get_simple_list_types_counter(list_):
+    result = {"int": 0, "float": 0, "bool": 0, "str": 0}
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    for element in list_:
+        if isinstance(element, int):
+            result["int"] += 1
+        if isinstance(element, float):
+            result["float"] += 1
+        if isinstance(element, bool):
+            result["bool"] += 1
+        if isinstance(element, str):
+            result["str"] += 1
+
+    return result
+
+
+def same_structure_as(original, other):
+    result = []
+
+    if isinstance(original, list) and isinstance(other, list):
+        if check_if_list_contains_simple_data_types(original) and check_if_list_contains_simple_data_types(other):
+            result.append(get_simple_list_types_counter(original) == get_simple_list_types_counter(other))
+        else:
+            for first, second in zip_longest(original, other):
+                if type(first) == type(second):
+                    if isinstance(first, list) and isinstance(second, list):
+                        result.append(same_structure_as(first, second))
+                    else:
+                        result.append(True)
+                else:
+                    result.append(False)
+    else:
+        result.append(type(original) == type(other))
+
+    return all(result)
